@@ -16,5 +16,11 @@ export class CartService {
     this.cartItems.update(items => [...items, item])
   }
 
+  removeFromCart(itemId: number) {
+    this.cartItems.update(items => {
+      return items.filter((item) => item.id !== itemId)
+    })
+  }
+
   constructor() { }
 }

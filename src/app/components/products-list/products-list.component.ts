@@ -11,14 +11,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './products-list.component.css'
 })
 export class ProductsListComponent implements OnInit {
-  products: any[] = [
-    {
-      title: 'Phone'
-    },
-    {
-      title: 'Tablet'
-    }
-  ]
+  products: any[] = []
 
   cartService = inject(CartService)
 

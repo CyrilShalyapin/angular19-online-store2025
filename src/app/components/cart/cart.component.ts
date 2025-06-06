@@ -9,10 +9,10 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartComponent {
 
-  cartService = inject(CartService)
+  public cartService = inject(CartService)
 
-  products = this.cartService.cartItems()
+  products = this.cartService.cartItems
 
-  totalPrice = this.cartService.totalPrice()
+  totalPrice = this.cartService.totalPrice
 
 }

@@ -1,7 +1,7 @@
 <ul>
-    @for (product of products; track product.id) {
-        <li>{{product.title}}, {{product.price}}</li>
+    @for (product of products(); track product.title) {
+        <li>{{product.title}}, {{product.price}} <button (click)="cartService.removeFromCart(product.id)">❌</button></li>
     }
 </ul>
 
-<p>Total price: {{totalPrice}}</p>
+<p>Total price: {{totalPrice()}}</p>
