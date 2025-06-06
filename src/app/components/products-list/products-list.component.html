@@ -2,7 +2,10 @@
     <h2>Products List</h2>
     <ul>    
         @for (product of products; track "id") {
-            <li>{{product.title}}</li>
+            <li>
+                <p>{{product.title}}</p>
+                <button (click)="cartService.addToCart(product)">Add to cart</button>
+            </li>
         }
     </ul>
 </section>

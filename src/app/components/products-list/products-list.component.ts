@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProductsService } from '../../services/products.service';
+import { CartService } from '../../services/cart.service';
 // import { ProductsService } from '../../services/products.service';
 
 @Component({
@@ -17,6 +18,8 @@ export class ProductsListComponent implements OnInit {
       title: 'Tablet'
     }
   ]
+
+  cartService = inject(CartService)
 
   constructor(private productsService: ProductsService) {}
 
