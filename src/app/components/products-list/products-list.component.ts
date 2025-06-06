@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ProductsService } from '../../services/products.service';
 import { CartService } from '../../services/cart.service';
+import { RouterLink } from '@angular/router';
 // import { ProductsService } from '../../services/products.service';
 
 @Component({
   selector: 'app-products-list',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './products-list.component.html',
   styleUrl: './products-list.component.css'
 })

@@ -5,6 +5,7 @@
             <li>
                 <p>{{product.title}}</p>
                 <button (click)="cartService.addToCart(product)">Add to cart</button>
+                <a routerLink="product/{{product.id}}">See details</a>
             </li>
         }
     </ul>
