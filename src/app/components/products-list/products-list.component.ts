@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { ProductsService } from '../../services/products.service';
 import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
@@ -11,16 +11,17 @@ import { RouterLink } from '@angular/router';
   styleUrl: './products-list.component.css'
 })
 export class ProductsListComponent implements OnInit {
-  products: any[] = []
-
   cartService = inject(CartService)
+  productsService = inject(ProductsService)
 
-  constructor(private productsService: ProductsService) {}
+  products: Signal<any> = this.productsService.products
+  isNoMore: Signal<boolean> = this.productsService.isNoMore
+
+  loadMore() {
+    this.productsService.loadMoreProducts()
+  }
 
   ngOnInit() {
-    this.productsService.getProducts().subscribe((data) => {
-      console.log(data)
-      this.products = data.products
-    })
+    this.productsService.getProducts()
   }
 }

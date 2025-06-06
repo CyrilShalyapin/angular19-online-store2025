@@ -1,12 +1,18 @@
 <section>
     <h2>Products List</h2>
     <ul>    
-        @for (product of products; track product.title) {
+        @for (product of products(); track product.id) {
             <li>
                 <p>{{product.title}}</p>
+                <p>Stock: {{product.stock}}</p>
                 <button (click)="cartService.addToCart(product)">Add to cart</button>
                 <a routerLink="product/{{product.id}}">See details</a>
             </li>
         }
     </ul>
+    @if (isNoMore()) {
+        <p>No more products avalable</p>
+    } @else {
+        <button (click)="loadMore()">Load next 25</button>
+    }
 </section>

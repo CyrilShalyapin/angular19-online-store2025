@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 
 @Component({
