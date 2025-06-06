@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -7,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './cart.component.css'
 })
 export class CartComponent {
+
+  cartService = inject(CartService)
+
+  products = this.cartService.cartItems()
+
+  totalPrice = this.cartService.totalPrice()
 
 }

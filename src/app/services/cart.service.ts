@@ -1,4 +1,4 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -6,11 +6,14 @@ import { Observable } from 'rxjs';
 })
 export class CartService {
 
-  cart: WritableSignal<any[]> = signal([])
+  cartItems: WritableSignal<any[]> = signal([])
+
+  totalPrice = computed(() => {
+    return this.cartItems().reduce((acc, item) => acc + item.price, 0)
+  })
 
   addToCart(item: any) {
-    console.log('here adding')
-    this.cart.update(items => [...items, item])
+    this.cartItems.update(items => [...items, item])
   }
 
   constructor() { }

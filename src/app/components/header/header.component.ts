@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 })
 export class HeaderComponent {
 
-  cartCount = computed(() => this.cartService.cart().length)
+  cartCount = computed(() => this.cartService.cartItems().length)
 
   constructor(private cartService: CartService) {
 
