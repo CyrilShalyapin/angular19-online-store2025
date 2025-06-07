@@ -1,7 +1,16 @@
 <ul>
-    @for (product of products(); track product.title) {
-        <li>{{product.title}}, {{product.price}} <button (click)="cartService.removeFromCart(product.id)">❌</button></li>
+    @for (product of cartProducts().values(); track product.title) {
+        <li>
+            <p>{{product.title}}</p>
+            <p>Quantity: <button [disabled]="product.quantity >= product.stock" (click)="cartService.addProductToCart(product)">+</button> {{product.quantity}} <button (click)="cartService.removeProductFromCart(product.id)">-</button></p>
+            <p>Price: {{product.price * product.quantity | currency}} </p>
+            <button (click)="cartService.deleteProductFromCartEntirely(product.id)">Remove</button>
+        </li>
     }
 </ul>
 
-<p>Total price: {{totalPrice()}}</p>
+@if (subTotalPrice()) {
+    <p>Total price: {{subTotalPrice() | currency}}</p>
+} @else {
+    <p>Cart is empty. <a routerLink="">Go shopping!</a></p>
+}

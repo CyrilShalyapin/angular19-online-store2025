@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
 
@@ -10,9 +10,7 @@ import { RouterLink } from '@angular/router';
 })
 export class HeaderComponent {
 
-  cartCount = computed(() => this.cartService.cartItems().length)
+  private cartService = inject(CartService)
 
-  constructor(private cartService: CartService) {
-
-  }
+  cartCount = this.cartService.cartProductsCount
 }

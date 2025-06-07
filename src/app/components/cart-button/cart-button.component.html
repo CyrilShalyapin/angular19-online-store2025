@@ -1,0 +1,6 @@
+@if (router.url !== '/cart' && cartProductsCount()) {
+    <a routerLink="cart" class="container">
+        <p>Cart: {{cartProductsCount()}}</p>
+        <p>{{subTotalPrice() | currency}}</p>
+    </a>
+}

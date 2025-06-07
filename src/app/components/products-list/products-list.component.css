@@ -19,3 +19,7 @@ li {
     min-height: 40px;
     text-overflow: ellipsis;
 }
+
+.details-link {
+    margin-left: 16px;
+}

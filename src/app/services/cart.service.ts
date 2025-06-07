@@ -6,20 +6,53 @@ import { Observable } from 'rxjs';
 })
 export class CartService {
 
-  cartItems: WritableSignal<any[]> = signal([])
+  cartProducts: WritableSignal<Map<string, any>> = signal(new Map())
 
-  totalPrice = computed(() => {
-    return this.cartItems().reduce((acc, item) => acc + item.price, 0)
+  cartProductsCount = computed(() => {
+    let count = 0
+    for (const [_key, product] of this.cartProducts()) {
+      count += product.quantity
+    }
+
+    return count
   })
 
-  addToCart(item: any) {
-    this.cartItems.update(items => [...items, item])
+  subTotalPrice = computed(() => {
+    let sum = 0
+    for (const [_key, product] of this.cartProducts()) {
+      sum += product.price * product.quantity
+    }
+
+    return sum
+  })
+
+  addProductToCart(product: any) {
+    const products = this.cartProducts()
+
+    if (!products.has(product.id)) {
+      this.cartProducts.update((map) => new Map(map).set(product.id, {...product, quantity: 1}))
+    } else {
+      const cartProduct = products.get(product.id)
+      cartProduct.quantity++
+      this.cartProducts.update((map) => new Map(map).set(cartProduct.id, cartProduct))
+    }
   }
 
-  removeFromCart(itemId: number) {
-    this.cartItems.update(items => {
-      return items.filter((item) => item.id !== itemId)
-    })
+  removeProductFromCart(productId: any) {
+    const cartProduct = this.cartProducts().get(productId)
+    if (cartProduct.quantity > 1) {
+      cartProduct.quantity--
+      this.cartProducts.update((map) => new Map(map).set(cartProduct.id, cartProduct))
+    } else {
+      this.deleteProductFromCartEntirely(productId)
+    }
+
+  } 
+
+  deleteProductFromCartEntirely(productId: any) {
+    const products = new Map(this.cartProducts())
+    products.delete(productId)
+    this.cartProducts.update(() => products)
   }
 
   constructor() { }

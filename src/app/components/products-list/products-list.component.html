@@ -7,8 +7,12 @@
                 <img width="200" height="200" [ngSrc]="product.images[0]" alt="product image">
                 <p>Price: {{product.price | currency}}</p>
                 <p>Stock: {{product.stock}}</p>
-                <button style="margin-right: 8px" (click)="cartService.addToCart(product)">Add to cart</button>
-                <a routerLink="product/{{product.id}}">See details</a>
+                @if (cartProducts().has(product.id)) {
+                    <button [disabled]="cartProducts().get(product.id).quantity >= product.stock" (click)="cartService.addProductToCart(product)">+</button> {{cartProducts().get(product.id).quantity}} <button (click)="cartService.removeProductFromCart(product.id)">-</button>
+                } @else {
+                    <button (click)="cartService.addProductToCart(product)">Add to cart</button>
+                }
+                <a class="details-link" routerLink="product/{{product.id}}">See details</a>
             </li>
         }
     </ul>

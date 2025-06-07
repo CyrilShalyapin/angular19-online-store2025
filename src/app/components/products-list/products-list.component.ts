@@ -16,6 +16,7 @@ export class ProductsListComponent implements OnInit {
   cartService = inject(CartService)
   productsService = inject(ProductsService)
 
+  cartProducts = this.cartService.cartProducts
   products: Signal<any> = this.productsService.products
   isNoMore: Signal<boolean> = this.productsService.isNoMore
 
