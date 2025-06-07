@@ -11,6 +11,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class CartButtonComponent {
   cartService = inject(CartService)
+  router = inject(Router)
 
   subTotalPrice = this.cartService.subTotalPrice
   cartProductsCount = this.cartService.cartProductsCount
