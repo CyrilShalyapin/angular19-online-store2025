@@ -4,8 +4,10 @@
         @for (product of products(); track product.id) {
             <li>
                 <p>{{product.title}}</p>
+                <img width="200px" src="{{product.images[0]}}" alt="product image">
+                <p>Price: {{product.price | currency}}</p>
                 <p>Stock: {{product.stock}}</p>
-                <button (click)="cartService.addToCart(product)">Add to cart</button>
+                <button style="margin-right: 8px" (click)="cartService.addToCart(product)">Add to cart</button>
                 <a routerLink="product/{{product.id}}">See details</a>
             </li>
         }

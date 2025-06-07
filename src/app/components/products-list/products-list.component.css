@@ -1,0 +1,14 @@
+ul {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+li {
+    min-width: 200px;
+    width: 200px;
+    padding: 16px;
+    border: 1px solid #e3e3e3;
+    margin: 8px;
+}
