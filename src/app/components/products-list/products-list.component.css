@@ -6,9 +6,16 @@ ul {
 }
 
 li {
+    position: relative;
     min-width: 200px;
     width: 200px;
     padding: 16px;
     border: 1px solid #e3e3e3;
     margin: 8px;
+}
+
+.title {
+    height: 40px;
+    min-height: 40px;
+    text-overflow: ellipsis;
 }

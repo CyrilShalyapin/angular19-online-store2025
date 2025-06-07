@@ -4,10 +4,11 @@ import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 // import { ProductsService } from '../../services/products.service';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-products-list',
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, NgOptimizedImage],
   templateUrl: './products-list.component.html',
   styleUrl: './products-list.component.css'
 })
