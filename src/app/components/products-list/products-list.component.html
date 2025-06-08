@@ -1,5 +1,6 @@
 <section>
     <h2>Products List</h2>
+    <app-products-search></app-products-search>
     <ul>    
         @for (product of products(); track product.id) {
             <li>
@@ -16,7 +17,7 @@
             </li>
         }
     </ul>
-    @if (isNoMore()) {
+    @if (allProductsLoaded()) {
         <p>No more products avalable</p>
     } @else {
         <button (click)="loadMore()">Load next 25</button>

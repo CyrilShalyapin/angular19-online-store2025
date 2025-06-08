@@ -1,0 +1,12 @@
+<section aria-label="search for product">
+    <div class="category-filter">
+        <label for="products">Select Category</label>
+        <select (change)="handleCategorySelect()" [(ngModel)]="selectedCategory" name="products">
+            <option value="everything">everything</option>
+            <hr />
+            @for (category of productsCategoryList; track category) {
+                <option [value]="category">{{category}}</option>
+            }
+        </select>
+    </div>
+</section>

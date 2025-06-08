@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -10,35 +10,61 @@ const PAGE_SIZE = 25
 
 export class ProductsService {
 
-  loadedProducts: number = 0
-  totalProducts: number = 0
+  loadedProductsCount = signal<number>(0)
+  totalProductsCount = signal<number>(0)
 
   constructor(private http: HttpClient) { }
 
   products = signal<any>([])
-  isNoMore = signal<boolean>(false)
+
+  allProductsLoaded = computed(() => {
+    return this.loadedProductsCount() >= this.totalProductsCount()
+  })
+
+  filters = signal<any>({
+    category: 'everything'
+  })
+
+  private baseProductRequestUrl = 'https://dummyjson.com/products'
+
+  private categoryProductRequestUrl = computed(() => {
+    let url = ''
+
+    if (this.filters().category !== 'everything') {
+      url = `/category/${this.filters().category}`
+    }
+
+    return url
+  })
+
+  private getProductsRequestUrl = computed(() => {
+    return this.baseProductRequestUrl + this.categoryProductRequestUrl() + '?limit=' + PAGE_SIZE
+  })
 
   getProducts(): void {
-    this.loadedProducts += PAGE_SIZE
-
-    this.http.get('https://dummyjson.com/products?limit=' + PAGE_SIZE).subscribe((data: any) => {
+    this.http.get(this.getProductsRequestUrl()).subscribe((data: any) => {
       this.products.set(data.products)
-      this.totalProducts = data.total
+      this.totalProductsCount.set(data.total)
+      console.log(data)
     })
+
+    this.loadedProductsCount.set(PAGE_SIZE)
   }
 
   getProductById(id: string): Observable<any> {
-    return this.http.get('https://dummyjson.com/products/' + id)
+    return this.http.get(this.baseProductRequestUrl + '/' + id)
   }
 
   loadMoreProducts(): void {
-    this.loadedProducts += PAGE_SIZE
-    if (this.loadedProducts + PAGE_SIZE > this.totalProducts) {
-      this.isNoMore.set(true)
-    }
-
-    this.http.get(`https://dummyjson.com/products?limit=${PAGE_SIZE}&skip=${this.loadedProducts}`).subscribe((data: any) => {
+    this.http.get(`${this.getProductsRequestUrl()}&skip=${this.loadedProductsCount()}`).subscribe((data: any) => {
       this.products.update(oldProducts => [...oldProducts, ...data.products])
+      console.log(data)
     })
+
+    this.loadedProductsCount.update((currentCount) => currentCount + PAGE_SIZE)
+  }
+
+  getProductsCategoryList(): Observable<any> {
+    return this.http.get(this.baseProductRequestUrl + '/category-list')
   }
 }
