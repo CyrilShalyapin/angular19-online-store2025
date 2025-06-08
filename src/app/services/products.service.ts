@@ -21,8 +21,9 @@ export class ProductsService {
     return this.loadedProductsCount() >= this.totalProductsCount()
   })
 
-  filters = signal<any>({
-    category: 'everything'
+  searchParams = signal<any>({
+    category: 'everything',
+    sortBy: 'category&order=asc',
   })
 
   private baseProductRequestUrl = 'https://dummyjson.com/products'
@@ -30,15 +31,19 @@ export class ProductsService {
   private categoryProductRequestUrl = computed(() => {
     let url = ''
 
-    if (this.filters().category !== 'everything') {
-      url = `/category/${this.filters().category}`
+    if (this.searchParams().category !== 'everything') {
+      url = `/category/${this.searchParams().category}`
     }
 
     return url
   })
 
+  private sortByUrl = computed(() => {
+    return `?sortBy=${this.searchParams().sortBy}`
+  })
+
   private getProductsRequestUrl = computed(() => {
-    return this.baseProductRequestUrl + this.categoryProductRequestUrl() + '?limit=' + PAGE_SIZE
+    return this.baseProductRequestUrl + this.categoryProductRequestUrl() + this.sortByUrl() + '&limit=' + PAGE_SIZE
   })
 
   getProducts(): void {

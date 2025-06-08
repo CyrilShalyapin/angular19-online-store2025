@@ -12,11 +12,39 @@ export class ProductsSearchComponent implements OnInit {
   productsCategoryList = []
   productsService = inject(ProductsService)
 
+  sortsList = [
+    {
+      displayName: 'category',
+      value: 'category&order=asc'
+    },
+    {
+      displayName: 'price (low to high)',
+      value: 'price&order=asc'
+    },
+    {
+      displayName: 'price (high to low)',
+      value: 'price&order=desc'
+    },
+    {
+      displayName: 'name',
+      value: 'title&order=asc'
+    },
+  ]
+
+  selectedSort = 'category&order=asc'
+
   selectedCategory = 'everything'
 
   handleCategorySelect() {
-    this.productsService.filters.update((currentFilters) => {
-      return {...currentFilters, category: this.selectedCategory}
+    this.productsService.searchParams.update((searchParams) => {
+      return {...searchParams, category: this.selectedCategory}
+    })
+    this.productsService.getProducts()
+  }
+
+  handleSortSelect() {
+    this.productsService.searchParams.update((searchParams) => {
+      return {...searchParams, sortBy: this.selectedSort}
     })
     this.productsService.getProducts()
   }
