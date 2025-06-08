@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ProductsService } from '../../services/products.service';
 import { FormsModule } from '@angular/forms';
+import { ProductCategoryType } from '../../types/product.types';
+import { DEFAULT_PRODUCT_CATEGORY } from '../../constants';
 
 @Component({
   selector: 'app-products-search',
@@ -9,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './products-search.component.css'
 })
 export class ProductsSearchComponent implements OnInit {
-  productsCategoryList = []
+  productsCategoryList: ProductCategoryType[] = []
   productsService = inject(ProductsService)
 
   sortsList = [
@@ -33,12 +35,10 @@ export class ProductsSearchComponent implements OnInit {
 
   selectedSort = 'category&order=asc'
 
-  selectedCategory = 'everything'
+  selectedCategory: ProductCategoryType = DEFAULT_PRODUCT_CATEGORY
 
   handleCategorySelect() {
-    this.productsService.searchParams.update((searchParams) => {
-      return {...searchParams, category: this.selectedCategory}
-    })
+    this.productsService.category.set(this.selectedCategory)
     this.productsService.getProducts()
   }
 

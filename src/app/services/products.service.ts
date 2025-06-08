@@ -1,6 +1,8 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ProductCategoryType, ProductType } from '../types/product.types';
+import { DEFAULT_PRODUCT_CATEGORY } from '../constants';
 
 const PAGE_SIZE = 25
 
@@ -10,16 +12,18 @@ const PAGE_SIZE = 25
 
 export class ProductsService {
 
+  constructor(private http: HttpClient) {}
+
+  products = signal<ProductType[]>([])
+
   loadedProductsCount = signal<number>(0)
   totalProductsCount = signal<number>(0)
 
-  constructor(private http: HttpClient) { }
-
-  products = signal<any>([])
-
-  allProductsLoaded = computed(() => {
+  allProductsLoaded = computed<boolean>(() => {
     return this.loadedProductsCount() >= this.totalProductsCount()
   })
+
+  category = signal<ProductCategoryType>(DEFAULT_PRODUCT_CATEGORY)
 
   searchParams = signal<any>({
     category: 'everything',
@@ -31,8 +35,8 @@ export class ProductsService {
   private categoryProductRequestUrl = computed(() => {
     let url = ''
 
-    if (this.searchParams().category !== 'everything') {
-      url = `/category/${this.searchParams().category}`
+    if (this.category() !== 'all-categories') {
+      url = `/category/${this.category()}`
     }
 
     return url
