@@ -37,6 +37,8 @@ export class ProductsSearchComponent implements OnInit {
 
   selectedCategory: ProductCategoryType = DEFAULT_PRODUCT_CATEGORY
 
+  searchQuery = this.productsService.searchQuery()
+
   handleCategorySelect() {
     this.productsService.category.set(this.selectedCategory)
     this.productsService.getProducts()
@@ -47,6 +49,10 @@ export class ProductsSearchComponent implements OnInit {
       return {...searchParams, sortBy: this.selectedSort}
     })
     this.productsService.getProducts()
+  }
+
+  handleSearch(event: Event) {
+    this.productsService.searchQuery.set((event.target as HTMLInputElement).value)
   }
 
   ngOnInit(): void {

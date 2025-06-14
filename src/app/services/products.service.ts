@@ -1,8 +1,9 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ProductCategoryType, ProductType } from '../types/product.types';
 import { DEFAULT_PRODUCT_CATEGORY } from '../constants';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const PAGE_SIZE = 25
 
@@ -18,6 +19,8 @@ export class ProductsService {
 
   loadedProductsCount = signal<number>(0)
   totalProductsCount = signal<number>(0)
+
+  searchQuery = signal<string>('')
 
   allProductsLoaded = computed<boolean>(() => {
     return this.loadedProductsCount() >= this.totalProductsCount()
@@ -76,4 +79,12 @@ export class ProductsService {
   getProductsCategoryList(): Observable<any> {
     return this.http.get(this.baseProductRequestUrl + '/category-list')
   }
+
+  searchQuery$ = toObservable(this.searchQuery).pipe(switchMap(value => {
+    return this.http.get(`https://dummyjson.com/products/search?q=${value}&limit=25`)
+  })).subscribe((data: any) => {
+    this.products.set(data.products)
+    this.totalProductsCount.set(data.total)
+    console.log(data)
+  })
 }
