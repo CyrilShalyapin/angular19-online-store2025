@@ -39,6 +39,8 @@ export class ProductsSearchComponent implements OnInit {
 
   searchQuery = this.productsService.searchQuery()
 
+
+
   handleCategorySelect() {
     this.productsService.category.set(this.selectedCategory)
     this.productsService.getProducts()

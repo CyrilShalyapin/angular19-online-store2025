@@ -1,15 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CartService } from '../../services/cart.service';
-import { CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-cart-button',
+  selector: 'app-cart-widget',
   imports: [CurrencyPipe, RouterLink],
-  templateUrl: './cart-button.component.html',
-  styleUrl: './cart-button.component.css'
+  templateUrl: './cart-widget.component.html',
+  styleUrl: './cart-widget.component.css'
 })
-export class CartButtonComponent {
+export class CartWidgetComponent {
   cartService = inject(CartService)
   router = inject(Router)
 
