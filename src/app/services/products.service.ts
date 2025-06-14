@@ -1,11 +1,20 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
+import { filter, Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ProductCategoryType, ProductType } from '../types/product.types';
-import { DEFAULT_PRODUCT_CATEGORY } from '../constants';
+import { CategoryType, ProductType, SortMethod } from '../types/product.types';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { DEFAULT_CATEGORY, DEFAULT_SORT_METHOD } from '../constants';
 
 const PAGE_SIZE = 25
+
+type SortMethodUrlType = 'sortBy=category&order=asc' | 'sortBy=price&order=asc' | 'sortBy=price&order=desc' | 'sortBy=title&order=asc'
+
+const SORT_METHOD_TO_URL_MAP = new Map<SortMethod, SortMethodUrlType>()
+  .set(SortMethod.Category, 'sortBy=category&order=asc')
+  .set(SortMethod.PriceASC, 'sortBy=price&order=asc')
+  .set(SortMethod.PriceDESC, 'sortBy=price&order=desc')
+  .set(SortMethod.Title, 'sortBy=title&order=asc')
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,70 +26,65 @@ export class ProductsService {
 
   products = signal<ProductType[]>([])
 
-  loadedProductsCount = signal<number>(0)
-  totalProductsCount = signal<number>(0)
+  loadedProductsCount = computed<number>(() => {
+    return this.products().length
+  })
 
+  totalProductsCount = signal<number>(0)
   searchQuery = signal<string>('')
 
   allProductsLoaded = computed<boolean>(() => {
     return this.loadedProductsCount() >= this.totalProductsCount()
   })
 
-  category = signal<ProductCategoryType>(DEFAULT_PRODUCT_CATEGORY)
+  category = signal<CategoryType>(DEFAULT_CATEGORY)
+  sortMethod = signal<SortMethod>(DEFAULT_SORT_METHOD)
 
-  searchParams = signal<any>({
-    category: 'everything',
-    sortBy: 'category&order=asc',
-  })
+  private getProductsRequestUrl = computed<string>(() => {
+    let url = 'https://dummyjson.com/products'
 
-  private baseProductRequestUrl = 'https://dummyjson.com/products'
-
-  private categoryProductRequestUrl = computed(() => {
-    let url = ''
+    if (this.searchQuery().length) {
+      url = url + `/search?q=${this.searchQuery()}&limit=25`
+      return url
+    }
 
     if (this.category() !== 'all-categories') {
-      url = `/category/${this.category()}`
+      url = url + `/category/${this.category()}`
+    }
+
+    url = url + `?limit=${PAGE_SIZE}`
+
+    if (this.sortMethod()) {
+      url = url + `&${SORT_METHOD_TO_URL_MAP.get(this.sortMethod() as SortMethod)}`
     }
 
     return url
-  })
-
-  private sortByUrl = computed(() => {
-    return `?sortBy=${this.searchParams().sortBy}`
-  })
-
-  private getProductsRequestUrl = computed(() => {
-    return this.baseProductRequestUrl + this.categoryProductRequestUrl() + this.sortByUrl() + '&limit=' + PAGE_SIZE
   })
 
   getProducts(): void {
     this.http.get(this.getProductsRequestUrl()).subscribe((data: any) => {
       this.products.set(data.products)
       this.totalProductsCount.set(data.total)
-      console.log(data)
     })
-
-    this.loadedProductsCount.set(PAGE_SIZE)
   }
 
   getProductById(id: string): Observable<any> {
-    return this.http.get(this.baseProductRequestUrl + '/' + id)
+    return this.http.get(`https://dummyjson.com/products/${id}`)
   }
 
   loadMoreProducts(): void {
     this.http.get(`${this.getProductsRequestUrl()}&skip=${this.loadedProductsCount()}`).subscribe((data: any) => {
       this.products.update(oldProducts => [...oldProducts, ...data.products])
-      console.log(data)
     })
-
-    this.loadedProductsCount.update((currentCount) => currentCount + PAGE_SIZE)
   }
 
-  getProductsCategoryList(): Observable<any> {
-    return this.http.get(this.baseProductRequestUrl + '/category-list')
+
+  // For some reason Observable<Category[]> wont be ok with typescript
+  getProductsCategoryList(): Observable<CategoryType[]> {
+    return this.http.get('https://dummyjson.com/products/category-list') as Observable<CategoryType[]>
   }
 
-  searchQuery$ = toObservable(this.searchQuery).pipe(switchMap(value => {
+  searchQuery$ = toObservable(this.searchQuery).pipe(filter(value => value !== '')).pipe(switchMap(value => {
     return this.http.get(`https://dummyjson.com/products/search?q=${value}&limit=25`)
   })).subscribe((data: any) => {
     this.products.set(data.products)

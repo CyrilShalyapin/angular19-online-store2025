@@ -1,0 +1,8 @@
+<div>
+    <label for="sort-method-select">Sort by</label>
+    <select name="sort-method-select" [(ngModel)]="selectedSortMethod" (change)="handleSortMethodSelect()" id="sort-method-select">
+        @for (sortMethod of sortMethodsList; track sortMethod.value) {
+            <option [value]="sortMethod.value">{{sortMethod.displayName}}</option>
+        }
+    </select>
+</div>

@@ -2,7 +2,7 @@ export type ProductType = {
     id: number
     title: string
     description: string
-    category: ProductCategoryType
+    category: CategoryType
     price: number
     discountPercentage: number
     rating: number
@@ -38,7 +38,7 @@ export type ProductType = {
     images: string[]
 }
 
-export type ProductCategoryType =
+export type CategoryType =
     "all-categories" |
     "beauty" |
     "fragrances" |
@@ -64,5 +64,39 @@ export type ProductCategoryType =
     "womens-jewellery" |
     "womens-shoes" |
     "womens-watches"
+
+export enum Category {
+  AllCategories = 'ALL_CATEGORIES',
+  Beauty = 'BEAUTY',
+  Fragrances = 'FRAGRANCES',
+  Furniture = 'FURNITURE',
+  Groceries = 'GROCERIES',
+  HomeDecoration = 'HOME_DECORATION',
+  KitchenAccessories = 'KITCHEN_ACCESSORIES',
+  Laptops = 'LAPTOPS',
+  MensShirts = 'MENS_SHIRTS',
+  MensShoes = 'MENS_SHOES',
+  MensWatches = 'MENS_WATCHES',
+  MobileAccessories = 'MOBILE_ACCESSORIES',
+  Motorcycle = 'MOTORCYCLE',
+  SkinCare = 'SKIN_CARE',
+  Smartphones = 'SMARTPHONES',
+  SportsAccessories = 'SPORTS_ACCESSORIES',
+  Sunglasses = 'SUNGLASSES',
+  Tablets = 'TABLETS',
+  Tops = 'TOPS',
+  Vehicle = 'VEHICLE',
+  WomensBags = 'WOMENS_BAGS',
+  WomensDresses = 'WOMENS_DRESSES',
+  WomensJewellery = 'WOMENS_JEWELLERY',
+  WomensShoes = 'WOMENS_SHOES',
+  WomensWatches = 'WOMENS_WATCHES',
+}
     
+export enum SortMethod {
+  PriceASC = 'PRICE_ASC',
+  PriceDESC = 'PRICE_DESC',
+  Title = 'TITLE',
+  Category = 'CATEGORY',
+}
   

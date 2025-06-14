@@ -1,0 +1,9 @@
+<div>
+    <label for="category-select">Categories</label>
+    <select [(ngModel)]="selectedCategory" (change)="handleCategorySelect()" name="category-select" id="category-select">
+        <option value="{{defaultCategory}}">{{displayNamesMap.get(defaultCategory)}}</option>
+        @for (category of categories; track category) {
+            <option value="{{category}}">{{displayNamesMap.get(category)}}</option>
+        }
+    </select>
+</div>
