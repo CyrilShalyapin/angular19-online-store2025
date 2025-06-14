@@ -1,0 +1,37 @@
+<section>
+    <form [formGroup]="formState" action="">
+        <label for="fullname">Full Name
+            <input formControlName="fullname" type="text" name="fullname">
+        </label>
+
+        <label for="email">Email
+            <input formControlName="email" type="email" name="email">
+        </label>
+
+        <label for="city">City
+            <select  formControlName="city" name="city" id="city">
+                <option value="Minsk">Minsk</option>
+                <option value="Brest">Brest</option>
+                <option value="Grodno">Grodno</option>
+                <option value="Hrodna">Hrodna</option>
+                <option value="Vitebsk">Vitebsk</option>
+                <option value="Homel">Homel</option>
+                <option value="Mogilev">Mogilev</option>
+            </select>
+        </label>
+
+        <label for="address">Address
+            <input formControlName="address" type="text" name="address">
+        </label>
+
+        <label for="postal-code">Postal Code
+            <input formControlName="postalCode" type="text" name="postal-code">
+        </label>
+
+        <label for="phone-number">Phone Number
+            <input formControlName="phoneNumber" type="number" name="phone-number">
+        </label>
+
+        <button [disabled]="!formState.valid" type="submit">Submit</button>
+    </form>
+</section>

@@ -11,6 +11,7 @@
 
 @if (subTotalPrice()) {
     <p>Total price: {{subTotalPrice() | currency}}</p>
+    <button [routerLink]="['/checkout']">Continue to Checkout</button>
 } @else {
     <p>Cart is empty. <a routerLink="">Go shopping!</a></p>
 }
