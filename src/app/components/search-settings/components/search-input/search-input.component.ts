@@ -23,6 +23,5 @@ export class SearchInputComponent {
   handleClearSearchInput() {
     this.searchQuery = ''
     this.productService.searchQuery.set('')
-    this.productService.getProducts()
   }
 }

@@ -1,22 +1,29 @@
 <section>
     <h2>Products List</h2>
     <app-search-settings></app-search-settings>
-    <ul>    
-        @for (product of products(); track product.id) {
-            <li>
-                <p class="title">{{product.title}}</p>
-                <img width="200" height="200" [ngSrc]="product.images[0]" alt="product image">
-                <p>Price: {{product.price | currency}}</p>
-                <p>Stock: {{product.stock}}</p>
-                @if (cartProducts().has(product.id)) {
-                    <button [disabled]="cartProducts().get(product.id).quantity >= product.stock" (click)="cartService.addProductToCart(product)">+</button> {{cartProducts().get(product.id).quantity}} <button (click)="cartService.removeProductFromCart(product.id)">-</button>
-                } @else {
-                    <button (click)="cartService.addProductToCart(product)">Add to cart</button>
-                }
-                <a class="details-link" routerLink="product/{{product.id}}">See details</a>
-            </li>
-        }
-    </ul>
+    @if (productsResource.isLoading()) {
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    } @else {
+        <ul>    
+            @for (product of productsResource.value(); track product.id) {
+                <li>
+                    <p class="title">{{product.title}}</p>
+                    <img width="200" height="200" [ngSrc]="product.images[0]" alt="product image">
+                    <p>Price: {{product.price | currency}}</p>
+                    <p>Stock: {{product.stock}}</p>
+                    @if (cartProducts().has(product.id)) {
+                        <button [disabled]="cartProducts().get(product.id).quantity >= product.stock" (click)="cartService.addProductToCart(product)">+</button> {{cartProducts().get(product.id).quantity}} <button (click)="cartService.removeProductFromCart(product.id)">-</button>
+                    } @else {
+                        <button (click)="cartService.addProductToCart(product)">Add to cart</button>
+                    }
+                    <a class="details-link" routerLink="product/{{product.id}}">See details</a>
+                </li>
+            }
+        </ul>
+    }
+    @if (productsResource.error()) {
+        <p>Something went wrong</p>
+    }
     @if (allProductsLoaded()) {
         <p>No more products avalable</p>
     } @else {

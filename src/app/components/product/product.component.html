@@ -1,5 +1,11 @@
-<p>product id: {{productId}}</p>
-<p>name: {{product.title}}</p>
-<p>price: {{product.price}}</p>
-<p>description: {{product.description}}</p>
-<button (click)="cartService.addProductToCart(product)">Add to Cart</button>
+@if (product.isLoading()) {
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+}
+
+@if (product.value().title) {
+    <p>product id: {{productId}}</p>
+    <p>name: {{product.value().title}}</p>
+    <p>price: {{product.value().price}}</p>
+    <p>description: {{product.value().description}}</p>
+    <button (click)="cartService.addProductToCart(product.value())">Add to Cart</button>
+}

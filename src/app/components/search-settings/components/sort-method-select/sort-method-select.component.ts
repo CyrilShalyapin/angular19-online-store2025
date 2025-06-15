@@ -41,6 +41,5 @@ export class SortMethodSelectComponent {
   handleSortMethodSelect() {
     console.log(this.selectedSortMethod);
     this.productsService.sortMethod.set(this.selectedSortMethod)
-    this.productsService.getProducts()
   }
 }

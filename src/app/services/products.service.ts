@@ -1,8 +1,6 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { filter, Observable, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, resource, signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { CategoryType, ProductType, SortMethod } from '../types/product.types';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { DEFAULT_CATEGORY, DEFAULT_SORT_METHOD } from '../constants';
 
 const PAGE_SIZE = 25
@@ -22,12 +20,33 @@ const SORT_METHOD_TO_URL_MAP = new Map<SortMethod, SortMethodUrlType>()
 
 export class ProductsService {
 
-  constructor(private http: HttpClient) {}
+  http = inject(HttpClient)
 
-  products = signal<ProductType[]>([])
+  // productsResource = resource({
+  //   request: () => ({url: this.getProductsRequestUrl()}),
+  //   loader: async ({request, abortSignal}): Promise<ProductType[]> => {
+
+  //     const jsonData = await fetch(request.url, {signal: abortSignal})
+  //     const data = await jsonData.json()
+  //     this.totalProductsCount.set(data.total)
+  //     return data.products
+  //   }
+  // })
+
+  productsResource = httpResource<ProductType[]>(
+    () => this.getProductsRequestUrl(),
+    {
+      defaultValue: [],
+      parse: (data: unknown) => {
+        const parsedData = data as {products: ProductType[], total: number}
+        this.totalProductsCount.set(parsedData.total)
+        return parsedData.products
+      }
+    }
+  )
 
   loadedProductsCount = computed<number>(() => {
-    return this.products().length
+    return this.productsResource.value()?.length ?? 0
   })
 
   totalProductsCount = signal<number>(0)
@@ -44,7 +63,7 @@ export class ProductsService {
     let url = 'https://dummyjson.com/products'
 
     if (this.searchQuery().length) {
-      url = url + `/search?q=${this.searchQuery()}&limit=25`
+      url = url + `/search?q=${this.searchQuery()}&limit=25&${SORT_METHOD_TO_URL_MAP.get(this.sortMethod() as SortMethod)}`
       return url
     }
 
@@ -61,34 +80,9 @@ export class ProductsService {
     return url
   })
 
-  getProducts(): void {
-    this.http.get(this.getProductsRequestUrl()).subscribe((data: any) => {
-      this.products.set(data.products)
-      this.totalProductsCount.set(data.total)
-    })
-  }
-
-  getProductById(id: string): Observable<any> {
-    return this.http.get(`https://dummyjson.com/products/${id}`)
-  }
-
   loadMoreProducts(): void {
     this.http.get(`${this.getProductsRequestUrl()}&skip=${this.loadedProductsCount()}`).subscribe((data: any) => {
-      this.products.update(oldProducts => [...oldProducts, ...data.products])
+      this.productsResource.update(oldProducts => oldProducts ? [...oldProducts, ...data.products] : [data.products])
     })
   }
-
-
-  // For some reason Observable<Category[]> wont be ok with typescript
-  getProductsCategoryList(): Observable<CategoryType[]> {
-    return this.http.get('https://dummyjson.com/products/category-list') as Observable<CategoryType[]>
-  }
-
-  searchQuery$ = toObservable(this.searchQuery).pipe(filter(value => value !== '')).pipe(switchMap(value => {
-    return this.http.get(`https://dummyjson.com/products/search?q=${value}&limit=25`)
-  })).subscribe((data: any) => {
-    this.products.set(data.products)
-    this.totalProductsCount.set(data.total)
-    console.log(data)
-  })
 }

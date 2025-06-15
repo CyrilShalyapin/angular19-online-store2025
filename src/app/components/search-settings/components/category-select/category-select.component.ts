@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, resource } from '@angular/core';
 import { ProductsService } from '../../../../services/products.service';
 import { CategoryType } from '../../../../types/product.types';
 import { FormsModule } from '@angular/forms';
 import { DEFAULT_CATEGORY } from '../../../../constants';
+import { httpResource } from '@angular/common/http';
 
 const CATEGORY_DISPLAY_NAME_MAP = new Map<CategoryType, string>()
   .set('all-categories', "All Categories")
@@ -37,25 +38,32 @@ const CATEGORY_DISPLAY_NAME_MAP = new Map<CategoryType, string>()
   templateUrl: './category-select.component.html',
   styleUrl: './category-select.component.css'
 })
-export class CategorySelectComponent implements OnInit {
+export class CategorySelectComponent {
   private productsService = inject(ProductsService)
 
   displayNamesMap = CATEGORY_DISPLAY_NAME_MAP
-
-  selectedCategory = this.productsService.category()
-
   defaultCategory = DEFAULT_CATEGORY
 
-  categories: CategoryType[] = []
+  // categoriesResource = resource({
+  //   loader: async (): Promise<CategoryType[]> => {
+  //     const response = await fetch('https://dummyjson.com/products/category-list')
+  //     const categoryList = await response.json()
+  //     return [DEFAULT_CATEGORY, ...categoryList]
+  //   },
+  //   defaultValue: [DEFAULT_CATEGORY]
+  // })
 
-  handleCategorySelect() {
-    this.productsService.category.set(this.selectedCategory)
-    this.productsService.getProducts()
-  }
+  categoriesResource = httpResource<CategoryType[]>(
+    () => 'https://dummyjson.com/products/category-list',
+    {
+      defaultValue: [DEFAULT_CATEGORY],
+      parse: (data) => {
+        return [DEFAULT_CATEGORY, ...data as CategoryType[]]
+      }
+    }
+  )
 
-  ngOnInit(): void {
-    this.productsService.getProductsCategoryList().subscribe((categories) => {
-      this.categories = categories
-    })
+  handleCategorySelect(event: Event) {
+    this.productsService.category.set((event.target as HTMLInputElement).value as CategoryType)
   }
 }
